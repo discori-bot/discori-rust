@@ -12,7 +12,7 @@ use crate::commands::explore::*;
 use crate::commands::home::*;
 use crate::commands::learn::*;
 use crate::commands::stats::*;
-
+use crate::commands::search::*;
 
 #[group]
 #[commands(explore, home, learn, stats)]
