@@ -1,18 +1,17 @@
 mod commands;
 
-use std::collections::HashSet;
-use std::env;
 use serenity::framework::standard::macros::group;
 use serenity::framework::StandardFramework;
 use serenity::http::Http;
 use serenity::prelude::*;
-use tracing::{error};
+use std::collections::HashSet;
+use std::env;
+use tracing::error;
 
 use crate::commands::explore::*;
 use crate::commands::home::*;
 use crate::commands::learn::*;
 use crate::commands::stats::*;
-
 
 #[group]
 #[commands(explore, home, learn, stats)]
@@ -34,12 +33,13 @@ async fn main() {
             owners.insert(info.owner.id);
 
             (owners, info.id)
-        },
-        Err(e) => panic!("Could not access application info: {:?}", e),
+        }
+        Err(e) => panic!("Could not access application info: {e:?}"),
     };
 
-     let framework =
-        StandardFramework::new().configure(|c| c.owners(owners).prefix("[")).group(&GENERAL_GROUP);
+    let framework = StandardFramework::new()
+        .configure(|c| c.owners(owners).prefix("["))
+        .group(&GENERAL_GROUP);
 
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::DIRECT_MESSAGES
