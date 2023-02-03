@@ -5,6 +5,6 @@ use serenity::prelude::*;
 
 #[command]
 #[aliases("e")]
-async fn explore(ctx: &Context, msg: &Message) -> CommandResult {
+async fn explore(_ctx: &Context, _msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
