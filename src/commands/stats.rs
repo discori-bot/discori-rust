@@ -4,7 +4,7 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
-#[aliases("stats")]
+#[aliases("s")]
 async fn stats(_ctx: &Context, _msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
