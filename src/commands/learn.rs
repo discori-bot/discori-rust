@@ -8,3 +8,7 @@ use serenity::prelude::*;
 async fn learn(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
+
+pub async fn learn_m(ctx: &Context, msg: &Message) -> CommandResult {
+    Ok(()) // To be modified
+}

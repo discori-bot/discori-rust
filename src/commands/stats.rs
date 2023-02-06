@@ -8,3 +8,7 @@ use serenity::prelude::*;
 async fn stats(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
+
+pub async fn stats_m(ctx: &Context, msg: &Message) -> CommandResult {
+    Ok(()) // To be modified
+}

@@ -8,3 +8,7 @@ use serenity::prelude::*;
 async fn search(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
+
+pub async fn search_m(ctx: &Context, msg: &Message) -> CommandResult {
+    Ok(()) // To be modified
+}
