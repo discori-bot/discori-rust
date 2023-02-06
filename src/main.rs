@@ -14,10 +14,10 @@ use tracing::{debug, error, info};
 
 use crate::commands::explore::*;
 use crate::commands::home::*;
-use crate::commands::learn::*;
-use crate::commands::stats::*;
 use crate::commands::invite::*;
+use crate::commands::learn::*;
 use crate::commands::ping::*;
+use crate::commands::stats::*;
 
 struct Handler;
 

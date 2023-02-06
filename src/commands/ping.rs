@@ -11,7 +11,13 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     let mut m = msg.channel_id.say(&ctx.http, "Pong!").await?;
     let after = Instant::now();
 
-    m.edit(ctx, |m| m.content(format!("Pong!\nMy ping is {}ms", (after - before).as_millis()))).await?;
+    m.edit(ctx, |m| {
+        m.content(format!(
+            "Pong!\nMy ping is {}ms",
+            (after - before).as_millis()
+        ))
+    })
+    .await?;
 
     Ok(()) // To be modified
 }
