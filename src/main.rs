@@ -16,6 +16,7 @@ use crate::commands::explore::*;
 use crate::commands::home::*;
 use crate::commands::learn::*;
 use crate::commands::stats::*;
+use crate::commands::invite::*;
 
 struct Handler;
 
@@ -27,7 +28,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(explore, home, learn, stats)]
+#[commands(explore, home, learn, stats, invite)]
 struct General;
 
 #[hook]
@@ -45,7 +46,7 @@ async fn before_hook(_ctx: &Context, msg: &Message, cmd_name: &str) -> bool {
 
 #[tokio::main]
 async fn main() {
-    // Make a .env file containing your bot token in the top-level directory
+    // Make a .env file containing your bot token and invite link in the top-level directory
     dotenv::dotenv().expect("Failed to load .env file");
     tracing_subscriber::fmt::init();
 
