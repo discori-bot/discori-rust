@@ -17,6 +17,7 @@ use crate::commands::home::*;
 use crate::commands::learn::*;
 use crate::commands::stats::*;
 use crate::commands::invite::*;
+use crate::commands::ping::*;
 
 struct Handler;
 
@@ -28,7 +29,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(explore, home, learn, stats, invite)]
+#[commands(explore, home, learn, stats, invite, ping)]
 struct General;
 
 #[hook]
