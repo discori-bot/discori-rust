@@ -5,7 +5,7 @@ use serenity::prelude::*;
 
 #[command]
 #[aliases("l")]
-async fn learn(ctx: &Context, msg: &Message) -> CommandResult {
+async fn learn(_ctx: &Context, _msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
 

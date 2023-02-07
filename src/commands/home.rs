@@ -5,7 +5,7 @@ use serenity::prelude::*;
 
 #[command]
 #[aliases("h")]
-async fn home(ctx: &Context, msg: &Message) -> CommandResult {
+async fn home(_ctx: &Context, _msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
 

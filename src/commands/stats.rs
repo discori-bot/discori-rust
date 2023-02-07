@@ -4,8 +4,8 @@ use serenity::model::prelude::*;
 use serenity::prelude::*;
 
 #[command]
-#[aliases("stats")]
-async fn stats(ctx: &Context, msg: &Message) -> CommandResult {
+#[aliases("s")]
+async fn stats(_ctx: &Context, _msg: &Message) -> CommandResult {
     Ok(()) // To be modified
 }
 

@@ -4,81 +4,76 @@ use std::collections::HashSet;
 use std::env;
 use serenity::async_trait;
 use serenity::framework::standard::macros::group;
+use serenity::framework::standard::macros::hook;
 use serenity::framework::StandardFramework;
-use serenity::http::Http;
-use serenity::prelude::*;
 use serenity::model::channel::Message;
-use tracing::{error};
+use serenity::model::gateway::Ready;
+use serenity::model::id::UserId;
+use serenity::prelude::*;
+use std::env;
+use tracing::{debug, error, info};
 
 use crate::commands::explore::*;
 use crate::commands::home::*;
+use crate::commands::invite::*;
 use crate::commands::learn::*;
+use crate::commands::ping::*;
 use crate::commands::stats::*;
-use crate::commands::search::*;
+
+struct Handler;
+
+#[async_trait]
+impl EventHandler for Handler {
+    async fn ready(&self, _: Context, ready: Ready) {
+        info!("Connected as {}", ready.user.name);
+    }
+}
 
 #[group]
-#[commands(explore, home, learn, stats)]
+#[commands(explore, home, learn, stats, invite, ping)]
 struct General;
+
+#[hook]
+async fn before_hook(_ctx: &Context, msg: &Message, cmd_name: &str) -> bool {
+    info!("#[command] {}: {}", msg.author.tag(), cmd_name);
+    debug!(
+        "#[command] {}{}: {} {}",
+        msg.author.tag(),
+        msg.author,
+        cmd_name,
+        msg.content
+    );
+    true
+}
 struct Handler;
 
 #[tokio::main]
 async fn main() {
-    // Make a .env file containing your bot token in the top-level directory
+    // Make a .env file containing your bot token and invite link in the top-level directory
     dotenv::dotenv().expect("Failed to load .env file");
     tracing_subscriber::fmt::init();
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
-    let http = Http::new(&token);
+    let bot_id: u64 = env::var("BOT_ID")
+        .expect("Expected a bot id in the environment")
+        .parse()
+        .expect("Expected bot id to be a number");
+    let owner_id: u64 = env::var("OWNER_ID")
+        .expect("Expected an owner id in the environment")
+        .parse()
+        .expect("Expected owner id to be a number");
+    let owners = vec![UserId(owner_id)].into_iter().collect();
 
-    // Fetch owner and bot data
-    let (owners, _bot_id) = match http.get_current_application_info().await {
-        Ok(info) => {
-            let mut owners = HashSet::new();
-            owners.insert(info.owner.id);
-
-            (owners, info.id)
-        },
-        Err(e) => panic!("Could not access application info: {:?}", e),
-    };
-
-    #[async_trait]
-    impl EventHandler for Handler {
-        async fn message(&self, ctx: Context, msg: Message) {
-            if msg.content.starts_with('[') && !msg.author.bot {
-                let content = &msg.content;
-                let mut args = content.split(" ");        
-                match &args.next().unwrap()[1..] {
-                    "explore!" => {
-                        explore_m(&ctx, &msg, args).await.unwrap();
-                    }
-                    "home!" => {
-                        home_m(&ctx, &msg).await.unwrap();
-                    }
-                    "learn!" => {
-                        learn_m(&ctx, &msg).await.unwrap();
-                    }
-                    "search!" => {
-                        search_m(&ctx, &msg).await.unwrap();
-                    }
-                    "stats!" => {
-                        stats_m(&ctx, &msg).await.unwrap();
-                    }
-                    &_ => {
-
-                    }
-                }
-            }
-        }
-    }
-
-    
-     let framework =
-        StandardFramework::new().configure(|c| c.owners(owners).prefix("[")).group(&GENERAL_GROUP);
+    let framework = StandardFramework::new()
+        .before(before_hook)
+        .configure(|c| c.on_mention(Some(bot_id.into())).owners(owners).prefix("["))
+        .group(&GENERAL_GROUP);
 
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
     let mut client = Client::builder(&token, intents)
+        .event_handler(Handler)
         .framework(framework)
         .event_handler(Handler)
         .await
