@@ -1,5 +1,12 @@
+mod prelude;
 mod commands;
+mod database;
+mod error;
+mod models;
+mod utils;
 
+use database::Database;
+use models::UserModel;
 use serenity::async_trait;
 use serenity::framework::standard::macros::group;
 use serenity::framework::standard::macros::hook;
@@ -10,7 +17,10 @@ use serenity::model::gateway::Ready;
 use serenity::prelude::*;
 use std::collections::HashSet;
 use std::env;
+use std::sync::Arc;
 use tracing::{debug, error, info};
+
+use crate::prelude::*;
 
 use crate::commands::explore::*;
 use crate::commands::home::*;
@@ -44,7 +54,7 @@ async fn before_hook(_ctx: &Context, msg: &Message, cmd_name: &str) -> bool {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     // Make a .env file containing your bot token in the top-level directory
     dotenv::dotenv().expect("Failed to load .env file");
     tracing_subscriber::fmt::init();
@@ -75,13 +85,22 @@ async fn main() {
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
+
     let mut client = Client::builder(&token, intents)
         .event_handler(Handler)
         .framework(framework)
         .await
         .expect("Error creating client");
+    
+    // TODO: remove
+    let db = Arc::new(Database::new().await?);
+    let users = UserModel::list(db).await?;
+    
+    println!("{:?}", users);
 
     if let Err(e) = client.start().await {
         error!("Client error: {:?}", e);
     }
+    
+    Ok(())
 }
